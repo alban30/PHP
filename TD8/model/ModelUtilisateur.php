@@ -10,36 +10,62 @@ class ModelUtilisateur extends Model {
 	private $prenom;
 
 	public function getLogin() {
-		return $this->login;
+			return $this->login;
 	}
 
 	public function setLogin($marque2) {
-		$this->login = $login2;
+			$this->login = $login2;
 	}
 
 	public function getNom() {
-		return $this->nom;
+			return $this->nom;
 	}
 
 	public function setNom($nom2) {
-		$this->nom = $nom2;
+			$this->nom = $nom2;
 	}
 
 	public function getPrenom() {
-		return $this->prenom;
+			return $this->prenom;
 	}
 
 	public function setPrenom($prenom2) {
-		$this->prenom = $prenom2;
+			$this->prenom = $prenom2;
 	}
 
 	public function __construct($data = array()) {
-		if(!(empty($data))) {
-			$this->login = $data["login"];
-			$this->nom = $data["nom"];
-			$this->prenom = $data["prenom"];
-			$this->mdp = $data["mdp"];
-		}
+			if(!(empty($data))) {
+					$this->login = $data["login"];
+					$this->nom = $data["nom"];
+					$this->prenom = $data["prenom"];
+					$this->mdp = $data["mdp"];
+			}
+	}
+
+	public static function checkPassword($login, $mot_de_passe_chiffre) {
+			try {
+					$sql = "SELECT * FROM utilisateur WHERE $login=:login AND $mot_de_passe_chiffre=:mdp";
+					$req_prep = Model::$pdo->prepare($sql);
+
+					$values = array("login" => $login, "mdp" => $mot_de_passe_chiffre);
+					$req_prep->execute($values);
+
+					$req_prep->setFetchMode(PDO::FETCH_CLASS, 'ModelUtilisateur');
+					$tab_u = $req_prep->fetchAll();
+
+					if(empty($tab_u))
+							return false;
+					return true;
+
+			} catch(PDOException $e) {
+					if (Conf::getDebug()) {
+							echo $e->getMessage(); // affiche un message d'erreur
+					}
+					else {
+							echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+					}
+					die();
+			}
 	}
 
 }

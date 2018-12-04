@@ -6,13 +6,13 @@ class ControllerUtilisateur {
 	protected static $object = "utilisateur";
 
 	public static function readAll() {
-  		$tab_u = ModelUtilisateur::selectAll();     //appel au modèle pour gerer la BD
+    	$tab_u = ModelUtilisateur::selectAll();     //appel au modèle pour gerer la BD
 
-      $pagetitle = "Liste d'utilisateurs";
-      $view = "list";
+        $pagetitle = "Liste d'utilisateurs";
+        $view = "list";
 
-      require (File::build_path(array("view", "view.php")));  //"redirige" vers la vue
-  }
+        require (File::build_path(array("view", "view.php")));  //"redirige" vers la vue
+    }
 
     public static function read() {
         $u = ModelUtilisateur::select($_GET['login']);   //appel au modèle pour gerer la BD
@@ -109,33 +109,6 @@ class ControllerUtilisateur {
 
         require (File::build_path(array("view", "view.php")));  //"redirige" vers la vues
     }
-
-		public static function connect() {
-				$pagetitle = "Connexion";
-				$view = "connect";
-				$target_action = "connected";
-
-				require (File::build_path(array("view", "view.php")));
-		}
-
-		public static function connected() {
-				$bool = ModelUtilisateur::checkPassword($_POST['login'], Security::chiffrer($_POST['mdp']));
-
-				if($bool) {
-						$_SESSION["login"] = $_POST["login"];
-				}
-
-				header("Location: index.php");
-		}
-
-		public static function deconnect() {
-				session_unset();     // unset $_SESSION variable for the run-time
-				session_destroy();   // destroy session data in storage
-				// Il faut réappeler session_start() pour accéder de nouveau aux variables de session
-				setcookie(session_name(),'',time()-1); // deletes the session cookie containing the session ID
-
-				header("Location: index.php");
-		}
 }
 
 ?>

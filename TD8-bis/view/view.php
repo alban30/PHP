@@ -11,14 +11,6 @@
             <a href="index.php?action=readAll&controller=utilisateur">Les Utilisateurs</a>
             <a href="index.php?action=readAll&controller=trajet">Les Trajets</a>
             <a href="config/preference.html">Préférence</a>
-            <?php
-            if(isset($_SESSION['login'])) {
-              echo '<a href="index.php?action=deconnect&controller=utilisateur">Déconnexion</a>';
-            }
-            else {
-              echo '<a href="index.php?action=connect&controller=utilisateur">Connexion</a>';
-            }
-            ?>
           </nav>
         </header>
 
