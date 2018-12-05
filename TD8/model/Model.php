@@ -56,7 +56,7 @@ class Model {
             $req_prep->execute($values);
 
             $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
-            $tab_voit = $req_prep->fetchAll();
+            $tab = $req_prep->fetchAll();
         } catch(PDOException $e) {
             if (Conf::getDebug()) {
                 echo $e->getMessage(); // affiche un message d'erreur
@@ -67,9 +67,9 @@ class Model {
             die();
         }
 
-        if (empty($tab_voit))
+        if (empty($tab))
               return false;
-          return $tab_voit[0];
+          return $tab[0];
     }
 
     public static function delete($primary_value) {

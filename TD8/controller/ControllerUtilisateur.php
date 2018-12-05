@@ -15,7 +15,7 @@ class ControllerUtilisateur {
   	}
 
     public static function read() {
-				$u = ModelUtilisateur::select($_GET['login']);   //appel au modèle pour gerer la BD
+				$u = ModelUtilisateur::select($_GET["login"]);   //appel au modèle pour gerer la BD
 
 				if(!$u) {
 						$pagetitle = "Erreur";
@@ -47,9 +47,14 @@ class ControllerUtilisateur {
     }
 
     public static function created() {
-				if($_POST['mdp'] == $_POST['mdpc']) {
-						if(filter_var($_POST["email"], FILTER_VALIDADE_EMAIL)) {
-								ModelUtilisateur::save(array("login" => $_POST['login'], "nom" => $_POST['nom'], "prenom" => $_POST['prenom'], "email" => $_POST['email'], "mdp"=>Security::chiffrer($_POST['mdp'])));
+				if($_POST["mdp"] == $_POST["mdpc"]) {
+						if(filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+								$nonce = Security::generateRandomHex();
+								ModelUtilisateur::save(array("login" => $_POST["login"], "nom" => $_POST["nom"], "prenom" => $_POST["prenom"], "email" => $_POST["email"], "mdp" => Security::chiffrer($_POST["mdp"]), "nonce" => $nonce));
+
+								$mail = '<p>Vous venez de vous inscrire sur <strong>Blablacar</strong>, pour confirmer votre inscription veuillez cliquer <a href="http://localhost/PHP/TD8/index.php?controller=utilisateur&action=validate&login=' . $_POST['login'] . '&nonce=' . $nonce . '">ici</a>.<br/>Blablacar vous remercie ! <em>Blablachatte !</em></p>';
+								mail($_POST['email'], "Inscription - Blablacar", $mail);
+
 								$pagetitle = "Utilisateur créé";
 								$view = "created";
 						}
@@ -69,7 +74,7 @@ class ControllerUtilisateur {
 
 		public static function update() {
     		if(Session::is_user($_GET["login"]) || Session::is_admin()) {
-						$u = ModelUtilisateur::select($_GET['login']);
+						$u = ModelUtilisateur::select($_GET["login"]);
 						$modifier = "readonly";
 						$target_action = "updated";
 
@@ -92,7 +97,7 @@ class ControllerUtilisateur {
     }
 
     public static function updated() {
-				if($_POST['mdp'] == $_POST['mdpc']) {
+				if($_POST["mdp"] == $_POST["mdpc"]) {
 						if(Session::is_admin()) {
 								if(isset($_POST["admin"]) && $_SESSION["admin"] == "1") {
 										$admin = 1;
@@ -100,10 +105,10 @@ class ControllerUtilisateur {
 								else {
 									$admin = 0;
 								}
-								$update = array("login" => $_POST['login'], "nom" => $_POST['nom'], "prenom" => $_POST['prenom'], "email" => $_POST['email'], "mdp"=>Security::chiffrer($_POST['mdp']), "admin"=>$admin);
+								$update = array("login" => $_POST["login"], "nom" => $_POST["nom"], "prenom" => $_POST["prenom"], "email" => $_POST["email"], "mdp"=>Security::chiffrer($_POST["mdp"]), "admin"=>$admin);
 						}
 						else {
-								$update = array("login" => $_POST['login'], "nom" => $_POST['nom'], "prenom" => $_POST['prenom'], "email" => $_POST['email'], "mdp"=>Security::chiffrer($_POST['mdp']));
+								$update = array("login" => $_POST["login"], "nom" => $_POST["nom"], "prenom" => $_POST["prenom"], "email" => $_POST["email"], "mdp"=>Security::chiffrer($_POST["mdp"]));
 						}
         		ModelUtilisateur::update($update);
         		$pagetitle = "Utilisateur modifié";
@@ -144,14 +149,17 @@ class ControllerUtilisateur {
 		}
 
 		public static function connected() {
+				$user = ModelUtilisateur::select($_SESSION['login']);
 				$bool = ModelUtilisateur::checkPassword($_POST['login'], Security::chiffrer($_POST['mdp']));
 
-				if($bool) {
-    				$_SESSION["login"] = $_POST["login"];
+				if($user->get("nonce") == NULL) {
+						if($bool) {
+								$_SESSION["login"] = $_POST["login"];
+						}
+						if(isset($_SESSION['login']) && $user->get("admin") == 1) {
+								$_SESSION["admin"] = true;
+						}
 				}
-				if(isset($_SESSION['login']) && ModelUtilisateur::select($_SESSION['login'])->getAdmin() == 1) {
-        		$_SESSION["admin"] = true;
-        }
 
 				header("Location: index.php");
 		}
@@ -163,6 +171,17 @@ class ControllerUtilisateur {
 				setcookie(session_name(),'',time()-1); // deletes the session cookie containing the session ID
 
 				header("Location: index.php");
+		}
+
+		public static function validate() {
+				$user = ModelUtilisateur::select($_GET["login"]);
+				if($_GET["nonce"] == $user->get("nonce")) {
+						ModelUtilisateur::update(array("login" => $user->get("login"), "nom" => $user->get("nom"), "prenom" => $user->get("prenom"), "mdp" => $user->get("mdp"), "email" => $user->get("email"), "nonce" => NULL));
+						self::connect();
+				}
+				else {
+						header("Location: index.php");
+				}
 		}
 }
 

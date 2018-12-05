@@ -8,7 +8,9 @@ class ModelUtilisateur extends Model {
 		private $login;
 		private $nom;
 		private $prenom;
+		private $email;
 		private $mdp;
+		private $nonce;
 		private $admin;
 
 		public function get($nom_attribut) {
@@ -28,7 +30,9 @@ class ModelUtilisateur extends Model {
 						$this->login = $data["login"];
 						$this->nom = $data["nom"];
 						$this->prenom = $data["prenom"];
+						$this->email = $data["email"];
 						$this->mdp = $data["mdp"];
+						$this->nonce = $data["nonce"];
 						$this->admin = $data["admin"];
 				}
 		}
