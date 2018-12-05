@@ -9,30 +9,16 @@ class ModelVoiture extends Model {
     private $couleur;
     private $immatriculation;
 
-    public function getMarque() {
-        return $this->marque;
+    public function get($nom_attribut) {
+        if (property_exists($this, $nom_attribut))
+            return $this->$nom_attribut;
+        return false;
     }
 
-    public function setMarque($marque2) {
-        $this->marque = $marque2;
-    }
-
-    public function getCouleur() {
-        return $this->couleur;
-    }
-
-    public function setCouleur($couleur2) {
-        $this->couleur  = $couleur2;
-    }
-
-    public function getImmatriculation() {
-        return $this->immatriculation;
-    }
-
-    public function setImmatriculation($immatriculation2) {
-        if(strlen($immatriculation2) <= 8) {
-            $this->immatriculation = $immatriculation2;
-        }
+    public function set($nom_attribut, $valeur) {
+        if (property_exists($this, $nom_attribut))
+            $this->$nom_attribut = $valeur;
+    		return false;
     }
 
     public function __construct($data = array()) {

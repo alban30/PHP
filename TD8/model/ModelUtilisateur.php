@@ -2,78 +2,61 @@
 require_once (File::build_path(array("model", "Model.php")));
 
 class ModelUtilisateur extends Model {
-	protected static $object = "utilisateur";
-	protected static $primary='login';
+		protected static $object = "utilisateur";
+		protected static $primary="login";
 
-	private $login;
-	private $nom;
-	private $prenom;
-	private $mdp;
-	private $admin;
+		private $login;
+		private $nom;
+		private $prenom;
+		private $mdp;
+		private $admin;
 
-	public function getLogin() {
-			return $this->login;
-	}
+		public function get($nom_attribut) {
+        if (property_exists($this, $nom_attribut))
+            return $this->$nom_attribut;
+        return false;
+    }
 
-	public function setLogin($marque2) {
-			$this->login = $login2;
-	}
+    public function set($nom_attribut, $valeur) {
+        if (property_exists($this, $nom_attribut))
+            $this->$nom_attribut = $valeur;
+    		return false;
+    }
 
-	public function getNom() {
-			return $this->nom;
-	}
+		public function __construct($data = array()) {
+				if(!(empty($data))) {
+						$this->login = $data["login"];
+						$this->nom = $data["nom"];
+						$this->prenom = $data["prenom"];
+						$this->mdp = $data["mdp"];
+						$this->admin = $data["admin"];
+				}
+		}
 
-	public function setNom($nom2) {
-			$this->nom = $nom2;
-	}
+		public static function checkPassword($login, $mot_de_passe_chiffre) {
+				try {
+						$sql = "SELECT * FROM utilisateur WHERE login=:login AND mdp=:mdp";
+						$req_prep = Model::$pdo->prepare($sql);
 
-	public function getPrenom() {
-			return $this->prenom;
-	}
+						$values = array("login" => $login, "mdp" => $mot_de_passe_chiffre);
+						$req_prep->execute($values);
 
-	public function setPrenom($prenom2) {
-			$this->prenom = $prenom2;
-	}
+						$req_prep->setFetchMode(PDO::FETCH_CLASS, 'ModelUtilisateur');
+						$tab_u = $req_prep->fetchAll();
 
-	public function getAdmin() {
-			return $this->admin;
-	}
+						if(empty($tab_u))
+								return false;
+						return true;
 
-
-	public function __construct($data = array()) {
-			if(!(empty($data))) {
-					$this->login = $data["login"];
-					$this->nom = $data["nom"];
-					$this->prenom = $data["prenom"];
-					$this->mdp = $data["mdp"];
-					$this->admin = $data["admin"];
-			}
-	}
-
-	public static function checkPassword($login, $mot_de_passe_chiffre) {
-			try {
-					$sql = "SELECT * FROM utilisateur WHERE login=:login AND mdp=:mdp";
-					$req_prep = Model::$pdo->prepare($sql);
-
-					$values = array("login" => $login, "mdp" => $mot_de_passe_chiffre);
-					$req_prep->execute($values);
-
-					$req_prep->setFetchMode(PDO::FETCH_CLASS, 'ModelUtilisateur');
-					$tab_u = $req_prep->fetchAll();
-
-					if(empty($tab_u))
-							return false;
-					return true;
-
-			} catch(PDOException $e) {
-					if (Conf::getDebug()) {
-							echo $e->getMessage(); // affiche un message d'erreur
-					}
-					else {
-							echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
-					}
-					die();
-			}
-	}
+				} catch(PDOException $e) {
+						if (Conf::getDebug()) {
+								echo $e->getMessage(); // affiche un message d'erreur
+						}
+						else {
+								echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+						}
+						die();
+				}
+		}
 
 }
