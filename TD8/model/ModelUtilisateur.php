@@ -8,6 +8,8 @@ class ModelUtilisateur extends Model {
 	private $login;
 	private $nom;
 	private $prenom;
+	private $mdp;
+	private $admin;
 
 	public function getLogin() {
 			return $this->login;
@@ -33,18 +35,24 @@ class ModelUtilisateur extends Model {
 			$this->prenom = $prenom2;
 	}
 
+	public function getAdmin() {
+			return $this->admin;
+	}
+
+
 	public function __construct($data = array()) {
 			if(!(empty($data))) {
 					$this->login = $data["login"];
 					$this->nom = $data["nom"];
 					$this->prenom = $data["prenom"];
 					$this->mdp = $data["mdp"];
+					$this->admin = $data["admin"];
 			}
 	}
 
 	public static function checkPassword($login, $mot_de_passe_chiffre) {
 			try {
-					$sql = "SELECT * FROM utilisateur WHERE $login=:login AND $mot_de_passe_chiffre=:mdp";
+					$sql = "SELECT * FROM utilisateur WHERE login=:login AND mdp=:mdp";
 					$req_prep = Model::$pdo->prepare($sql);
 
 					$values = array("login" => $login, "mdp" => $mot_de_passe_chiffre);
