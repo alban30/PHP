@@ -62,7 +62,7 @@ class ControllerUtilisateur {
     }
 
     public static function update() {
-            if(Session::is_user($_GET["login"])) {
+            if(Session::is_user($_GET["login"]) || Session::is_admin()) {
                     $u = ModelUtilisateur::select($_GET['login']);
                     $modifier = "readonly";
                     $target_action = "updated";

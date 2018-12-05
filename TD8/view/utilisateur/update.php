@@ -26,6 +26,17 @@
       <input type="password" placeholder="********" name="mdpc" id="mdpc" required/>
     </p>
 
+    <?php
+    if(Session::is_admin()) {
+      echo <<< EOT
+      <p>
+        <label for="mdpc">Confirmation</label> :
+        <input type="password" placeholder="********" name="mdpc" id="mdpc" required/>
+      </p>
+EOT;
+    }
+    ?>
+
     <p>
       <input type="hidden" value="<?php echo static::$object;?>" />
       <input type="submit" value="Envoyer" />
