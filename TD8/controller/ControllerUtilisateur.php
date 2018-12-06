@@ -52,7 +52,7 @@ class ControllerUtilisateur {
 								$nonce = Security::generateRandomHex();
 								ModelUtilisateur::save(array("login" => $_POST["login"], "nom" => $_POST["nom"], "prenom" => $_POST["prenom"], "email" => $_POST["email"], "mdp" => Security::chiffrer($_POST["mdp"]), "nonce" => $nonce));
 
-								$mail = '<p>Vous venez de vous inscrire sur <strong>Blablacar</strong>, pour confirmer votre inscription veuillez cliquer <a href="http://localhost/PHP/TD8/index.php?controller=utilisateur&action=validate&login=' . $_POST['login'] . '&nonce=' . $nonce . '">ici</a>.<br/>Blablacar vous remercie ! <em>Blablachatte !</em></p>';
+								$mail = '<p>Vous venez de vous inscrire sur <strong>Blablacar</strong>, pour confirmer votre inscription veuillez cliquer <a href="http://webinfo.iutmontp.univ-montp2.fr/~pereiraa/TD/PHP/TD8/index.php?controller=utilisateur&action=validate&login=' . $_POST['login'] . '&nonce=' . $nonce . '">ici</a>.<br/>Blablacar vous remercie ! <em>Blablachatte !</em></p>';
 								mail($_POST['email'], "Inscription - Blablacar", $mail);
 
 								$pagetitle = "Utilisateur créé";
@@ -149,14 +149,14 @@ class ControllerUtilisateur {
 		}
 
 		public static function connected() {
-				$user = ModelUtilisateur::select($_SESSION['login']);
-				$bool = ModelUtilisateur::checkPassword($_POST['login'], Security::chiffrer($_POST['mdp']));
+				$user = ModelUtilisateur::select($_POST["login"]);
+				$bool = ModelUtilisateur::checkPassword($_POST["login"], Security::chiffrer($_POST["mdp"]));
 
 				if($user->get("nonce") == NULL) {
 						if($bool) {
 								$_SESSION["login"] = $_POST["login"];
 						}
-						if(isset($_SESSION['login']) && $user->get("admin") == 1) {
+						if(isset($_SESSION["login"]) && $user->get("admin") == 1) {
 								$_SESSION["admin"] = true;
 						}
 				}
@@ -168,7 +168,7 @@ class ControllerUtilisateur {
 				session_unset();     // unset $_SESSION variable for the run-time
 				session_destroy();   // destroy session data in storage
 				// Il faut réappeler session_start() pour accéder de nouveau aux variables de session
-				setcookie(session_name(),'',time()-1); // deletes the session cookie containing the session ID
+				setcookie(session_name(), "", time()-1); // deletes the session cookie containing the session ID
 
 				header("Location: index.php");
 		}
