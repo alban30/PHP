@@ -16,7 +16,7 @@ class Conf {
         'password' => 'rendpasfou34'
     );
 
-    static private $debug = False;
+    static private $debug = True;
 
     static public function getLogin() {
         //en PHP l'indice d'un tableau n'est pas forcement un chiffre.
@@ -29,17 +29,17 @@ class Conf {
     }
 
     static public function getDatabase() {
-            //en PHP l'indice d'un tableau n'est pas forcement un chiffre.
-            return self::$databases['database'];
+        //en PHP l'indice d'un tableau n'est pas forcement un chiffre.
+        return self::$databases['database'];
     }
 
     static public function getPassword() {
-            //en PHP l'indice d'un tableau n'est pas forcement un chiffre.
-            return self::$databases['password'];
+        //en PHP l'indice d'un tableau n'est pas forcement un chiffre.
+        return self::$databases['password'];
     }
 
     static public function getDebug() {
-            return self::$debug;
+        return self::$debug;
     }
 }
 ?>

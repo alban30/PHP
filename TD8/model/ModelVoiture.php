@@ -10,23 +10,23 @@ class ModelVoiture extends Model {
     private $immatriculation;
 
     public function get($nom_attribut) {
-        if (property_exists($this, $nom_attribut))
-            return $this->$nom_attribut;
-        return false;
+            if (property_exists($this, $nom_attribut))
+                    return $this->$nom_attribut;
+            return false;
     }
 
     public function set($nom_attribut, $valeur) {
-        if (property_exists($this, $nom_attribut))
-            $this->$nom_attribut = $valeur;
-    		return false;
+            if (property_exists($this, $nom_attribut))
+                    $this->$nom_attribut = $valeur;
+            return false;
     }
 
     public function __construct($data = array()) {
-        if (!empty($data)) {
-            $this->marque = $data("marque");
-            $this->couleur = $data("couleur");
-            $this->immatriculation = $data("immatriculation");
-        }
+            if (!empty($data)) {
+                    $this->marque = $data("marque");
+                    $this->couleur = $data("couleur");
+                    $this->immatriculation = $data("immatriculation");
+            }
     }
 
 }

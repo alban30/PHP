@@ -3,18 +3,6 @@ require_once (File::build_path(array("controller", "ControllerVoiture.php")));
 require_once (File::build_path(array("controller", "ControllerUtilisateur.php")));
 require_once (File::build_path(array("controller", "ControllerTrajet.php")));
 
-function myGet($nomVar) {
-		if(isset($_GET[$nomVar])) {
-				return $_GET[$nomVar];
-		}
-		elseif(isset($_POST[$nomVar])) {
-				return $_POST[$nomVar];
-		}
-		else {
-				return false;
-		}
-
-}
 if(isset($_COOKIE["Preference"])) {
 		$controler_default = $_COOKIE["Preference"];
 }
@@ -22,8 +10,8 @@ else {
 		$controler_default = "voiture";
 }
 
-if(myGet("controller") != false) {
-		$controller = myGet("controller");
+if(isset($_GET['controller'])) {
+		$controller = $_GET['controller'];
 }
 else {
 		$controller = $controler_default;
@@ -32,8 +20,8 @@ else {
 $controller_class = "Controller" . ucfirst($controller);
 
 if(class_exists($controller_class)) {
-		if(myGet("action") != false) {
-	  		$action = myGet("action");
+		if(isset($_GET['action'])) {
+	  		$action = $_GET['action'];
 		}
 		else {
 		    $action = "readAll";

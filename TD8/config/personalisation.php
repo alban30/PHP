@@ -1,9 +1,9 @@
 <?php
-if(isset($_POST["page"])) {
-    setcookie("Preference", $_POST["page"], time() + 60, "/");
-    header("Location: ../index.php");
+if(myGet("page") != false) {
+		setcookie("Preference", myGet("page"), time() + 60, "/");
+		header("Location: ../index.php");
 }
 else {
-    header("Location: preference.php");
+		header("Location: preference.php");
 }
 ?>
